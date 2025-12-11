@@ -3,10 +3,10 @@ from dotenv import load_dotenv
 from google import genai
 import argparse
 from google.genai import types
+from prompts import SYSTEM_PROMPT
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
-
 
 if api_key == None:
     raise RuntimeError("Gemini API Key is not set")
@@ -21,7 +21,12 @@ def main():
 
     messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
 
-    response = client.models.generate_content(model='gemini-2.5-flash', contents=messages)
+    response = client.models.generate_content(
+        model="gemini-3-pro-preview",
+        contents=messages,
+        config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT),
+    )
+
     if response.usage_metadata == None:
         raise RuntimeError("API Request failed")
     if args.verbose:
