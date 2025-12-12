@@ -1,5 +1,20 @@
 import os
 import subprocess
+from google.genai import types
+
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Just runs a python script, constrained to the working directory",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path of the file",
+            ),
+        },
+    ),
+)
 
 def run_python_file(working_directory, file_path, args=[]):
     try:
@@ -8,7 +23,7 @@ def run_python_file(working_directory, file_path, args=[]):
         abs_path = os.path.abspath(full_path)
 
         if not ".py" in file_path:
-            return f'Error: "{file_path}" is not a Python file.'
+            return f''
         if not os.path.exists(abs_path):
             return f'Error: File "{file_path}" not found.'
         if not abs_path.startswith(workdir_abs_path):
